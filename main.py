@@ -167,7 +167,7 @@ class Cluster:
                 logger.warning("Shoot time is null")
                 is_right_seq = False
             if is_right_seq and not self.is_video_time_end_time(folder_df):
-                logger.info(f"Folder {folder_path}: Time model")
+                logger.info(f"Folder {folder_path}: Time mode")
                 # 时间顺序正确 按照时间顺序分包
                 seq = []
                 for i, file in enumerate(folder_df.itertuples()):
@@ -182,27 +182,27 @@ class Cluster:
                 if len(seq) > 0:
                     folder_df = self.move_seq(seq, folder_path, folder_df)
             elif is_right_seq and self.is_video_time_end_time(folder_df) and guess:
-                logger.info(f"Processing folder {folder_path}: Fallback to Guess model")
-                folder_df = self.guess_model(folder_df, folder_path)
+                logger.info(f"Processing folder {folder_path}: Fallback to Guess mode")
+                folder_df = self.guess_mode(folder_df, folder_path)
             elif is_right_seq and self.is_video_time_end_time(folder_df) and not guess:
                 logger.info(
-                    f"Processing folder {folder_path}: Fallback to No Guess model"
+                    f"Processing folder {folder_path}: Fallback to No Guess mode"
                 )
-                folder_df = self.non_guess_model(folder_df, folder_path)
+                folder_df = self.non_guess_mode(folder_df, folder_path)
             elif not is_right_seq and guess:
-                logger.info(f"Processing folder {folder_path}: Guess model")
-                folder_df = self.guess_model(folder_df, folder_path)
+                logger.info(f"Processing folder {folder_path}: Guess mode")
+                folder_df = self.guess_mode(folder_df, folder_path)
                 # 时间顺序不正确 按照文件名顺序分包
 
             elif not is_right_seq and not guess:
-                logger.info(f"Processing folder {folder_path}: No Guess Model")
+                logger.info(f"Processing folder {folder_path}: No Guess mode")
                 # 时间顺序不正确 不适用猜测模式
-                folder_df = self.non_guess_model(folder_df, folder_path)
+                folder_df = self.non_guess_mode(folder_df, folder_path)
         self.df = self.df.filter(items=["file_id", "seq_id", "seq_label", "moved"])
         orgnized_output = os.path.splitext(result)[0] + "_organized.csv"
         self.df.to_csv(orgnized_output, encoding="utf-8-sig", index=False)
 
-    def guess_model(
+    def guess_mode(
         self,
         folder_df: pd.DataFrame,
         folder_path: Path,
@@ -235,7 +235,7 @@ class Cluster:
                     max_count = right_count
                     best_window_size = window_size
                 if window_size >= 5 and best_window_size == 0:
-                    folder_df = self.non_guess_model(folder_df, folder_path)
+                    folder_df = self.non_guess_mode(folder_df, folder_path)
             logger.info(f"Best window size: {best_window_size}")
             offset = 0
             while (
@@ -284,7 +284,7 @@ class Cluster:
                         seq = [file]
         return folder_df
 
-    def non_guess_model(
+    def non_guess_mode(
         self,
         folder_df: pd.DataFrame,
         folder_path: Path,
@@ -318,13 +318,13 @@ class Cluster:
                         logger.error(f"Failed to move file: {e}")
 
 
-def organize(result: Path, model: str):
+def organize(result: Path, mode: str):
     cluster = Cluster(result.parent)
-    if model == "default":
+    if mode == "default":
         cluster.organize(result)
-    elif model == "guess":
+    elif mode == "guess":
         cluster.organize(result, guess=True)
-    elif model == "undo":
+    elif mode == "undo":
         cluster.undo_orgnize()
 
 
@@ -374,4 +374,4 @@ if __name__ == "__main__":
     logger.add(sys.stdout, level=args.log_level)
     logger.add(args.log_file, level=args.log_level)
 
-    organize(result, model=args.model)
+    organize(result, mode=args.mode)
