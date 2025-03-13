@@ -16,14 +16,19 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
+            python-arch: x64
           - target: x86_64-apple-darwin
             os: macos-13
+            python-arch: x64
           - target: aarch64-apple-darwin
             os: macos-latest
+            python-arch: x64
           - target: x86_64-pc-windows-msvc
             os: windows-latest
+            python-arch: x64
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-24.04-arm
+            python-arch: aarch64
 
     runs-on: ${{ matrix.os }}
 
@@ -35,15 +40,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          architecture: 'x64'
+          architecture: ${{ matrix.python-arch }}
           cache: 'pip'
           cache-dependency-path: |
             **/requirements*.txt
-
       - name: Install Dependencies
         run: |
           pip install -r requirements.txt
-
       - name: Build Executable
         uses: Nuitka/Nuitka-Action@main
         with:
