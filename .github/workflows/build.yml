@@ -47,7 +47,7 @@ jobs:
         with:
           nuitka-version: main
           script-name: main.py
-          mode: app
+          mode: onefile
           output-file: organize-${{ matrix.target }}
 
       - name: Upload Artifacts
