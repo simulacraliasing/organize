@@ -304,7 +304,7 @@ class Cluster:
             folder_df = folder_df[folder_df["file_id"] != _file.file_id]
         return folder_df
 
-    def redo_orgnize(self):
+    def undo_orgnize(self):
         self.total_file_count = 0
         for root, _, files in os.walk(self.target):
             for file in files:
@@ -324,8 +324,8 @@ def organize(result: Path, model: str):
         cluster.organize(result)
     elif model == "guess":
         cluster.organize(result, guess=True)
-    elif model == "redo":
-        cluster.redo_orgnize()
+    elif model == "undo":
+        cluster.undo_orgnize()
 
 
 if __name__ == "__main__":
@@ -339,7 +339,7 @@ if __name__ == "__main__":
         "--mode",
         type=str,
         default="default",
-        choices=["default", "guess", "redo"],
+        choices=["default", "guess", "undo"],
     )
     parser.add_argument(
         "--log-level",
