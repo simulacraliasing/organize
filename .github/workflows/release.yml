@@ -22,13 +22,13 @@ jobs:
             python-arch: x64
           - target: aarch64-apple-darwin
             os: macos-latest
-            python-arch: x64
+            python-arch: arm64
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             python-arch: x64
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-24.04-arm
-            python-arch: aarch64
+            python-arch: arm64
 
     runs-on: ${{ matrix.os }}
 
