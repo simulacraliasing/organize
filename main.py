@@ -336,7 +336,7 @@ if __name__ == "__main__":
         help="Path to the result file",
     )
     parser.add_argument(
-        "--model",
+        "--mode",
         type=str,
         default="default",
         choices=["default", "guess", "redo"],
